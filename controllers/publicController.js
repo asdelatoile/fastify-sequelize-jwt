@@ -11,7 +11,7 @@ module.exports = function (fastify, opts, done) {
     fastify.route({
         method: 'GET',
         url: '/me',
-        preValidation: [fastify.retrieveToken, fastify.retrieveUser],
+        preValidation: [fastify.retrieveToken, fastify.retrieveUser, fastify.permissions(['guest', 'superadmin', 'admin'])],
         handler: function (request, reply) {
             reply.code(200).send({ "user": request.user })
         }

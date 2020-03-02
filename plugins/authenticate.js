@@ -19,11 +19,22 @@ module.exports = fp(async function (fastify, opts) {
     fastify.decorate("retrieveUser", async function (request, reply) {
         try {
             const { User } = fastify.sequelize;
-            const user = await User.findByPk(request.user.id);
+            const user = await User.findByPk(request.user.id, {
+                include: [
+                    {
+                        association: 'roles',
+                        attributes: ['name'],
+                        required: false,
+                        through: {
+                            attributes: []
+                        }
+                    }
+                ]
+            });
             if (!user) {
                 reply.code(404).send({ error: 'User not found' })
             }
-            request.user = user;
+            request.user = user.get({ plain: true });
         } catch (err) {
             reply.send(err)
         }

@@ -15,13 +15,10 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.beforeCreate((user, options) => {
-    console.log("beforeCreate", user, options)
     return bcrypt.hash(user.password, 8).then(hashedPw => {
-      console.log(hashedPw);
       user.password = hashedPw;
     });
   });
-
 
   User.prototype.checkPassword = async function (password) {
     if (!this.password) {

@@ -6,6 +6,7 @@ const fastify = require('fastify')(config.fastify)
 fastify.register(require('./plugins/sequelize'), config.sequelize)
 fastify.register(require('./plugins/authenticate'), config.jwt)
 fastify.register(require('./plugins/yup'), config.yup)
+fastify.register(require('./plugins/permissions'))
 
 
 fastify.register(require('./services/users'))

@@ -22,7 +22,7 @@ module.exports = fp(async function (fastify, opts) {
                     }
                 }
             ]
-        });
+        })
     }
     const createUser = async function (payload) {
         const { User } = fastify.sequelize;
