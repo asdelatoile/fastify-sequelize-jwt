@@ -1,0 +1,25 @@
+{
+  "name": "fastify-sequelize-jwt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "db:migrate": "node ./database/sync.js",
+    "db:seed": "node ./database/seed.js",
+    "db:delete": "node ./database/delete.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "fastify": "^2.12.1",
+    "fastify-jwt": "^1.2.1",
+    "fastify-plugin": "^1.6.1",
+    "pino-pretty": "^3.6.0",
+    "sequelize": "^5.21.5",
+    "sqlite3": "^4.1.1"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "development": {
+    "fastify": {
+      "logger": {
+        "prettyPrint": true
+      }
+    },
+    "sequelize": {
+      "dialect": "sqlite",
+      "storage": "database/api.sqlite"
+    },
+    "jwt": {
+      "secret": "b6d8a00f8f0c03930b8b7b4175a5f9f9",
+      "expiresIn": "7d"
+    }
+  },
+  "test": {
+    "fastify": {},
+    "sequelize": {
+      "username": "root",
+      "password": null,
+      "database": "database_test",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    },
+    "jwt": {}
+  },
+  "production": {
+    "fastify": {},
+    "sequelize": {
+      "username": "root",
+      "password": null,
+      "database": "database_production",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    },
+    "jwt": {}
+  }
+}
