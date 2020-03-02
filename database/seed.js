@@ -33,10 +33,20 @@ async function seed() {
     });
 
 
+    // await db.User.create({
+    //     "email": "test@test.com",
+    //     "password": "demo",
+    // })
     await db.User.create({
-        "email": "test@test.com",
-        "password": "demo",
-    })
+        email: "test@test.com",
+        password: "demo",
+        roles: [
+            { name: 'admin' },
+            { name: 'superadmin' }
+        ]
+    }, {
+        include: ['roles']
+    });
 
 
 }

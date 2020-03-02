@@ -2,8 +2,14 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/config/config.json')[env];
 
 const fastify = require('fastify')(config.fastify)
+
 fastify.register(require('./plugins/sequelize'), config.sequelize)
 fastify.register(require('./plugins/authenticate'), config.jwt)
+fastify.register(require('./plugins/yup'), config.yup)
+
+
+fastify.register(require('./services/users'))
+
 fastify.register(require('./controllers/publicController'))
 
 

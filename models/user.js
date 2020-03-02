@@ -5,10 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
   }, {
-    timestamps: false
+    timestamps: false,
+    tableName: 'users',
+    underscored: true
   });
   User.associate = function (models) {
     // associations can be defined here
+    User.belongsToMany(models.Role, { through: 'users_roles', foreignKey: 'user_id', as: 'roles' })
   };
 
   User.beforeCreate((user, options) => {
@@ -28,10 +31,5 @@ module.exports = (sequelize, DataTypes) => {
     return match;
   };
 
-  // User.addHook('beforeValidate', async user => {
-  //   if (user.password) {
-  //     user.password_hash = await bcrypt.hash(user.password, 8);
-  //   }
-  // });
   return User;
 };

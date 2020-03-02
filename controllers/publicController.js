@@ -1,12 +1,13 @@
 module.exports = function (fastify, opts, done) {
 
     fastify.route({
-        method: 'GET',
+        method: 'POST',
         url: '/',
         handler: async function (request, reply) {
             reply.code(200).send({ "hello": "Yes" })
         }
     })
+
     fastify.route({
         method: 'GET',
         url: '/me',
@@ -16,51 +17,61 @@ module.exports = function (fastify, opts, done) {
         }
     })
 
-    fastify.post('/login', async (request, reply) => {
-        const { email, password } = request.body;
-        const { User } = fastify.sequelize;
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-            return reply.status(401).send({ error: 'User not found.' });
+    fastify.route({
+        method: 'POST',
+        url: '/login',
+        schema: {
+            body: fastify.yup.object({
+                email: fastify.yup.string().email().required(),
+                password: fastify.yup.string().required()
+            })
+        },
+        schemaCompiler: fastify.yupSchemaCompiler,
+        handler: async function (request, reply) {
+            const { email, password } = request.body;
+            const user = await fastify.userService.getUserByEmailWithRoles(email);
+            if (!user) {
+                return reply.status(401).send({ error: 'Wrong email or password' });
+            }
+            const authorize = await fastify.userService.checkPassword(user, password);
+            if (!authorize) {
+                return reply.status(401).send({ error: 'Wrong email or password' });
+            }
+            const { id, name, roles } = user;
+            const token = await fastify.generateToken({ id });
+            return reply.send({
+                user: {
+                    id,
+                    name,
+                    email,
+                    roles
+                },
+                token
+            });
         }
-        if (!(await user.checkPassword(password))) {
-            return reply.status(401).send({ error: 'Password does not match.' });
-        }
-        const { id, name } = user;
-        const token = await fastify.generateToken({ id });
-        return reply.send({
-            user: {
-                id,
-                name,
-                email,
-            },
-            token
-        });
-    })
+    });
 
     fastify.route({
         method: 'POST',
         url: '/register',
+        schema: {
+            body: fastify.yup.object({
+                email: fastify.yup.string().email().required(),
+                password: fastify.yup.string().required()
+            })
+        },
+        schemaCompiler: fastify.yupSchemaCompiler,
         handler: async function (request, reply) {
-            const { User } = fastify.sequelize;
             const { body } = request;
-            const userExists = await User.findOne({ where: { email: body.email } });
-            if (userExists) {
+            const checkUser = await fastify.userService.getUserByEmailWithRoles(body.email);
+            if (checkUser) {
                 reply.code(400).send({ error: 'User alredy exists' })
             }
-            const user = await User.create(body);
+            const user = await fastify.userService.createUser(body);
             reply.code(201).send(user)
-        },
-        schema: {
-            body: {
-                type: 'object',
-                required: ['email', 'password'],
-                properties: {
-                    email: { type: 'string' },
-                    password: { type: 'string' }
-                }
-            }
-        },
+        }
     })
+
     done()
+
 }
