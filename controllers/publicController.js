@@ -54,10 +54,9 @@ module.exports = function (fastify, opts, done) {
         schema: {
             body: {
                 type: 'object',
-                required: ['name', 'email', 'password'],
+                required: ['email', 'password'],
                 properties: {
                     email: { type: 'string' },
-                    name: { type: 'string' },
                     password: { type: 'string' }
                 }
             }
